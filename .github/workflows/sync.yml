@@ -1,0 +1,37 @@
+name: Sync YAML Files to Unreleased Templates
+
+on:
+  push:
+    paths:
+      - '**.yaml'
+  workflow_dispatch:
+
+jobs:
+  sync-files:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout public-templates repo
+      uses: actions/checkout@v2
+      with:
+        repository: 'parthmalhotra/nuclei-templates'
+        path: 'nuclei-templates'
+
+    - name: Checkout unreleased_templates repo
+      uses: actions/checkout@v2
+      with:
+        repository: 'parthmalhotra/unreleased_templates'
+        token: ${{ secrets.ACCESS_TOKEN }} # Personal Access Token
+        path: 'unreleased_templates'
+
+    - name: Sync YAML files (including deletions)
+      run: |
+        rsync -av --delete --include='*/' --include='*.yaml' --exclude='*' nuclei-templates/ unreleased_templates/public/
+
+    - name: Commit and Push changes
+      run: |
+        cd unreleased_templates
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add -A
+        git commit -m "Automated sync of YAML files, including deletions"
+        git push
