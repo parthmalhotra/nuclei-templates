@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout public-templates repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: 'parthmalhotra/nuclei-templates'
         path: 'nuclei-templates'
 
     - name: Checkout unreleased_templates repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: 'parthmalhotra/unreleased_templates'
         token: ${{ secrets.ACCESS_TOKEN }} # Personal Access Token
